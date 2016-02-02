@@ -9,6 +9,7 @@ def runnerCreator(tag):
     '''
 
     minimalTag='c%s'%(tag.split('_')[1])
+    fastDir='/tmp/%s/'%tag
     
     inputFile='sgeRunners/%s.sh'%tag
     with open(inputFile,'w') as g:
@@ -17,18 +18,21 @@ def runnerCreator(tag):
         g.write('#$ -o %s/messagesDIAMOND_%s.o.txt\n'%(scratchDir,minimalTag))
         g.write('#$ -e %s/messagesDIAMOND_%s.e.txt\n'%(scratchDir,minimalTag))
         g.write('#$ -P Bal_alomana\n')
-        g.write('#$ -pe serial 20\n')
+        g.write('#$ -pe serial %s\n'%threads)
         g.write('#$ -q baliga\n')
         g.write('#$ -S /bin/bash\n\n')
         g.write('cd /users/alomana\n')
         g.write('source .bash_profile\n\n')
 
-        cmd=diamondPath+' blastx -d '+nrPath+' -q '+fastaFilesDir+tag+'.fasta -a '+diamondOutputDir+tag+' -t '+scratchDir+' --threads '+str(threads)+' --sensitive'
+        g.write('mkdir %s\n\n'%fastDir)
+
+        cmd='time '+diamondPath+' blastx -d '+nrPath+' -q '+fastaFilesDir+tag+'.fasta -a '+diamondOutputDir+tag+' -t '+fastDir+' --threads '+str(threads)+' --sensitive'
         g.write('%s\n\n'%cmd)
 
         cmd=diamondPath+' view -a '+diamondOutputDir+tag+'.daa -o '+diamondOutputDir+tag+'.m8'
         g.write('%s\n\n'%cmd)
 
+        g.write('rm -rf %s\n\n'%fastDir)
 
     g.close()
 
@@ -48,11 +52,12 @@ inputFiles=os.listdir(fastaFilesDir)
 # 2. create launching the SGE calling files
 for inputFile in inputFiles:
     tag=inputFile.split('.')[0]
+    #!tag='concatenated_99'
     runnerCreator(tag)
 
     # 2.1. launching
     cmd='qsub sgeRunners/%s.sh'%tag
     os.system(cmd)
-    sys.exit()
+    #!sys.exit()
 
 print '... all done.'

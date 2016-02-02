@@ -19,14 +19,22 @@ for path in paths:
     # 2.1. uncompressing files
     print '\t uncompressing files...'
     elements=os.listdir(path2OriginalFiles+path)
-    gunzipFiles=[element for element in elements if '_paired_trimmed.fastq.gz' in element]
+    gunzipFiles=[path2OriginalFiles+path+'/'+element for element in elements if '_paired_trimmed.fastq.gz' in element]
     for file in gunzipFiles:
-        os.system()
+        os.system('gunzip -k -f %s'%file)
 
     # 2.2. concatenating files
     print '\t concatenating files...'
+    concatenatedLabel=path2OriginalFiles+path
+    fastaFiles=[element.replace('.gz','') for element in gunzipFiles]
+    cmd='cat '
+    for element in fastaFiles:
+        cmd=cmd+' '+element
+    cmd=cmd+' > %s/concatenated.fastq'%(concatenatedLabel)
+
+    os.system(cmd)
 
     # 2.3. converting to fasta file
     print '\t converting FASTQ into FASTA file...'
-
-    sys.exit()
+    cmd="awk 'BEGIN{P=1}{if(P==1||P==2){gsub(/^[@]/,\">\");print}; if(P==4)P=0; P++}' %s/concatenated.fastq > %s/concatenated_%s.fasta"%(concatenatedLabel,concatenatedLabel,label)
+    os.system(cmd)

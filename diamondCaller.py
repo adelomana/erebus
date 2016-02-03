@@ -24,22 +24,18 @@ def runnerCreator(tag):
         g.write('cd /users/alomana\n')
         g.write('source .bash_profile\n\n')
 
-        g.write('mkdir %s\n\n'%fastDir)
-
-        cmd='time '+diamondPath+' blastx -d '+nrPath+' -q '+fastaFilesDir+tag+'.fasta -a '+diamondOutputDir+tag+' -t '+fastDir+' --threads '+str(threads)+' --sensitive'
+        cmd='time '+diamondPath+' blastx -d '+nrPath+' -q '+fastaFilesDir+tag+'.fasta -a '+diamondOutputDir+tag+' --threads '+str(threads)+' --sensitive -e 1e-5' # e-value reference, http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3613424/
         g.write('%s\n\n'%cmd)
 
         cmd=diamondPath+' view -a '+diamondOutputDir+tag+'.daa -o '+diamondOutputDir+tag+'.m8'
         g.write('%s\n\n'%cmd)
-
-        g.write('rm -rf %s\n\n'%fastDir)
 
     g.close()
 
     return None
 
 # 0. user defined variables
-threads=20
+threads=40
 diamondPath='/proj/omics4tb/alomana/software/diamond_linux64binary_v0.7.9/diamond'
 nrPath='/proj/omics4tb/alomana/projects/rossSea/data/metagenomics/db/nr'
 fastaFilesDir='/proj/omics4tb/alomana/projects/ornl/data/fastaFiles/'

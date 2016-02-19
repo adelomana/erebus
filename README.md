@@ -1,5 +1,5 @@
 # erebus
-Tools for quantitative metagenomic analyses.  
+Tools for quantitative metagenomic analysis of underground samples.  
     
 fileHandler.py; script to uncompress, merge and convert FASTQ into FATA files.  
 diamondCaller.py; script to call DIAMOND and convert reads into BLAST hits.  

@@ -26,7 +26,7 @@ def suffixesFinder(count):
 
 # 0. user defined variables
 print 'defining user variables...'
-numberOfFiles=64-1 # this should be 64
+numberOfFiles=64 # this should be 64
 
 # 1. creating the runner file
 for i in range(numberOfFiles):
@@ -68,7 +68,5 @@ for i in range(numberOfFiles):
     os.system(cmd)
     print
     print '%s job completed.'%count
-
-    #sys.exit()
 
     

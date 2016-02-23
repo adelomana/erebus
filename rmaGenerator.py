@@ -1,6 +1,6 @@
 ### this script creates the input files for MEGAN5 and runs them in batch mode
 
-import os,sys,copy
+import os,sys
 
 def suffixesFinder(count):
 
@@ -39,7 +39,6 @@ for i in range(numberOfFiles):
     runnerFile='runners/runner_%s.txt'%count
     with open(runnerFile,'w') as f:
         
-        #f.write("show window=ImportBlast;\n")
         f.write("load taxGIFile='/Users/alomana/Applications/MEGAN/class/resources/files/gi_taxid-March2015X.bin';\n")
         f.write("set taxUseGIMap=true;\n")
         f.write("load keggGIFile='/Users/alomana/Applications/MEGAN/class/resources/files/gi2kegg-Feb2015X.bin';\n")

@@ -22,6 +22,54 @@ def abundancesReader():
 
     return flotilla
 
+def matrixDiscreteMaker(t):
+
+    '''
+    this function converts the frequencies matrix t into an integer valued-matrix
+    rules used:
+
+    less than 1% or nan --> nan
+    between 1% and 5% --> 1
+    between 5% and 10% --> 2
+    between 10% and 20% --> 3
+    more than 20% --> 4
+    '''
+
+    # less than 1% or nan --> 1
+    numpy.place(t,numpy.isnan(t),0)
+    numpy.place(t,t<0.01,float('nan'))
+
+    # between 1% and 5% --> 2
+    t[numpy.where(numpy.logical_and(t>=0.01, t<0.05))]=1
+
+    # between 5% and 10% --> 3
+    t[numpy.where(numpy.logical_and(t>=0.05, t<0.1))]=2
+
+    # between 10% and 20% --> 4
+    t[numpy.where(numpy.logical_and(t>=0.1, t<0.2))]=3
+
+    # more than 20% --> 5
+    t[numpy.where(numpy.logical_and(t>=0.2, t<1-1e-10))]=4
+
+    return t
+
+def discrete_cmap(N, base_cmap=None):
+    
+    '''
+    Create an N-bin discrete colormap from the specified input map
+    Modified from https://gist.github.com/jakevdp/91077b0cae40f8f8244a
+    '''
+
+    # Note that if base_cmap is a string or None, you can simply do
+    #    return plt.cm.get_cmap(base_cmap, N)
+    # The following works for string, None, or a colormap instance:
+
+    base = matplotlib.pyplot.cm.get_cmap(base_cmap)
+    color_list = base(numpy.linspace(0, 1, N))
+    cmap_name = base.name + str(N)
+    
+    return base.from_list(cmap_name, color_list, N)
+
 def metaDataReader():
 
     '''
@@ -216,24 +264,25 @@ for well in allWells:
             m.append(v)
         m=numpy.array(m)
         t=numpy.transpose(m)
-        logT=numpy.log10(t)
-
-        #for i in range(len(finalRowNames)):
-        #    print finalRowNames[i],'\t',list(logT[i])
-        #sys.exit()
-
+        discreteT=matrixDiscreteMaker(t)
+        
         # plotting the figure
-        matplotlib.pyplot.imshow(logT,interpolation='none',cmap='jet')
-        matplotlib.pyplot.colorbar(label='log f',orientation='vertical',fraction=0.01)
+        colorResolution=4
+        discrete_cmap = matplotlib.pyplot.get_cmap('Blues',colorResolution)
+        matplotlib.pyplot.imshow(t,interpolation='none',cmap=discrete_cmap,vmin=0.5,vmax=4.5)
+        theBar=matplotlib.pyplot.colorbar(label='frequency',orientation='vertical',fraction=0.1,ticks=[0.5,1.5,2.5,3.5,4]) # original fraction was 0.01
+        theBar.ax.set_yticklabels(['1%','5%','10%','20%','>20%'])
+        
         matplotlib.pyplot.grid(False)
         matplotlib.pyplot.xticks(range(len(columnNames)),columnNames,size=8,rotation=90)
         matplotlib.pyplot.yticks(range(len(finalRowNames)),finalRowNames,size=8)
         matplotlib.pyplot.tight_layout()
+        matplotlib.pyplot.tick_params(axis='x',which='both',bottom='off',top='off')
+        matplotlib.pyplot.tick_params(axis='y',which='both',right='off',left='off')
         figureName='well_%s_size_%s.png'%(well,size)
         matplotlib.pyplot.savefig('figures/%s'%figureName)
         matplotlib.pyplot.clf()
-        print
-
         
-        #sys.exit()
+        print
+        
         

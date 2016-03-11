@@ -83,7 +83,11 @@ def metaDataReader():
                 filterSize=int(vector[4])
 
             # sorted population id
-            sortedPopulation=vector[6]
+            tag=vector[6]
+            if 'P' in tag:
+                counter=int(tag.split('P')[1])
+                tag='P%02d'%counter
+            sortedPopulation=tag
 
             # populating variable
             metaData[sampleName]={}
@@ -175,6 +179,7 @@ for well in allWells:
         for sampleID in metaData.keys():
             if metaData[sampleID]['well'] == well and metaData[sampleID]['size'] == size:
                 selectedSamples[sampleID]=metaData[sampleID]['population']
+
         sortedColumns=sorted(selectedSamples,key=selectedSamples.__getitem__)
 
         # selecting the most abundant taxa over each of the samples

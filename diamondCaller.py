@@ -2,6 +2,38 @@
 
 import os,sys
 
+def diamondDBbuilder():
+
+    '''
+    this function creates a runner file to be run in aegir under the SGE
+    '''
+
+    print 'building the database for DIAMOND...'
+    # creating runner file
+    inputFile=scratchDir+'databaseBuilder.sh'
+    with open(inputFile,'w') as g:
+        g.write('#!/bin/bash\n\n')
+        g.write('#$ -N database\n')
+        g.write('#$ -o %s/messages_database_DIAMOND.o.txt\n'%scratchDir)
+        g.write('#$ -e %s/messages_database_DIAMOND.e.txt\n'%scratchDir)
+        g.write('#$ -P Bal_alomana\n')
+        g.write('#$ -pe serial %s\n'%threads)
+        g.write('#$ -q baliga\n')
+        g.write('#$ -S /bin/bash\n\n')
+        g.write('cd /users/alomana\n')
+        g.write('source .bash_profile\n\n')
+
+        cmd='time '+diamondPath+' makedb --in '+dataBaseFastaFile+' -d '+dataBaseDiamondPath+' --threads '+str(threads)
+        g.write('%s\n\n'%cmd)
+        
+    g.close()
+
+    # submitting to queue
+    cmd='qsub %s'%inputFile
+    os.system(cmd)
+
+    return None
+
 def runnerCreator(tag):
 
     '''
@@ -11,7 +43,7 @@ def runnerCreator(tag):
     minimalTag='c%s'%(tag.split('_')[1])
     fastDir='/tmp/%s/'%tag
     
-    inputFile='sgeRunners/%s.sh'%tag
+    inputFile='sgeRunnersRefSeq/%s.sh'%tag
     with open(inputFile,'w') as g:
         g.write('#!/bin/bash\n\n')
         g.write('#$ -N %s\n'%minimalTag)
@@ -24,7 +56,7 @@ def runnerCreator(tag):
         g.write('cd /users/alomana\n')
         g.write('source .bash_profile\n\n')
 
-        cmd='time '+diamondPath+' blastx -d '+nrPath+' -q '+fastaFilesDir+tag+'.fasta -a '+diamondOutputDir+tag+' --threads '+str(threads)+' --sensitive -e 1e-5' # e-value reference, http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3613424/
+        cmd='time '+diamondPath+' blastx -d '+dataBaseDiamondPath+' -q '+fastaFilesDir+tag+'.fasta -a '+diamondOutputDir+tag+' --threads '+str(threads)+' --sensitive -e 1e-5' # e-value reference, http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3613424/
         g.write('%s\n\n'%cmd)
 
         cmd=diamondPath+' view -a '+diamondOutputDir+tag+'.daa -o '+diamondOutputDir+tag+'.m8'
@@ -36,24 +68,29 @@ def runnerCreator(tag):
 
 # 0. user defined variables
 threads=40
-diamondPath='/proj/omics4tb/alomana/software/diamond_linux64binary_v0.7.9/diamond'
-nrPath='/proj/omics4tb/alomana/projects/rossSea/data/metagenomics/db/nr'
+diamondPath='/proj/omics4tb/alomana/software/diamond-linux64_binary_v0.7.11/diamond'
+dataBaseFastaFile='/proj/omics4tb/alomana/software/diamond-linux64_binary_v0.7.11/complete.nonredundant_protein.all.version.january.19.faa'
+dataBaseDiamondPath='/proj/omics4tb/alomana/software/diamond-linux64_binary_v0.7.11/refseq_jan_19_complete.nonredundant_protein'
 fastaFilesDir='/proj/omics4tb/alomana/projects/ornl/data/fastaFiles/'
-diamondOutputDir='/proj/omics4tb/alomana/projects/ornl/data/diamondFiles/'
+diamondOutputDir='/proj/omics4tb/alomana/projects/ornl/data/diamondFilesRefSeq/'
 scratchDir='/proj/omics4tb/alomana/scratch/diamond/'
 
-# 1. define the inputs
+# 1. building DIAMOND db
+#diamondDBbuilder()
+#sys.exit()
+
+# 2. define the inputs
 inputFiles=os.listdir(fastaFilesDir)
 
-# 2. create launching the SGE calling files
+# 3. create launching the SGE calling files
 for inputFile in inputFiles:
     tag=inputFile.split('.')[0]
     #!tag='concatenated_99'
     runnerCreator(tag)
 
     # 2.1. launching
-    cmd='qsub sgeRunners/%s.sh'%tag
+    cmd='qsub sgeRunnersRefSeq/%s.sh'%tag
     os.system(cmd)
-    #!sys.exit()
+    #sys.exit()
 
 print '... all done.'

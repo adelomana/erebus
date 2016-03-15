@@ -2,10 +2,13 @@
 
 import sys
 
+# 0. user defined variables
 inputFileDir='/Volumes/omics4tb/alomana/projects/ornl/data/diamondFilesRefSeq/'
 numberOfFiles=64
 threshold=70.
 
+# 1. main
+allFreq=[]
 
 for i in range(1,numberOfFiles+1):
 
@@ -34,4 +37,9 @@ for i in range(1,numberOfFiles+1):
     print 'number of accepted hits',nS
     print 'frequency of acceptance',freq
     print
+
+    allFreq.append(freq)
+
+print 'most successful frequencty',max(allFreq)
+print 'least successful frequency',min(allFreq)
     

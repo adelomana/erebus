@@ -53,6 +53,7 @@ output=hydra.map(selector,labels)
     
 # 2. messages printing
 print
+allFreq=[]
 for i in range(len(output)):
 
     print 'about file %s ...'%str(i+1)
@@ -61,7 +62,8 @@ for i in range(len(output)):
     print 'frequency of acceptance %s'%(output[i][0])
     print
 
-allFreq=output[:][0]
+    allFreq.append(output[i][0])
+
 print 'most successful frequencty',max(allFreq)
 print 'least successful frequency',min(allFreq)
     

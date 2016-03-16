@@ -48,9 +48,9 @@ for i in range(numberOfFiles):
         f.write("load cogGIFile='/Users/alomana/Applications/MEGAN/class/resources/files/ncbi/ncbi.map';\n")
         f.write("set cogUseGIMap=true;\n")
 
-        f.write("import blastFile='/Volumes/omics4tb/alomana/projects/ornl/data/diamondFiles/concatenated_%s.m8' "%count)
+        f.write("import blastFile='/Volumes/omics4tb/alomana/projects/ornl/data/diamondFilesRefSeq/concatenated.strict_%s.m8' "%count)
         f.write("fastaFile='/Volumes/omics4tb/alomana/projects/ornl/data/fastaFiles/concatenated_%s.fasta' "%count)
-        f.write("meganFile='/Volumes/omics4tb/alomana/projects/ornl/data/rmaAuto/concatenated_%s.rma' "%count)
+        f.write("meganFile='/Volumes/omics4tb/alomana/projects/ornl/data/rmaRefSeq/concatenated_%s.rma' "%count)
         f.write("maxMatches=100 minScore=50.0 maxExpected=0.01 topPercent=10.0 minSupport=1 minComplexity=0.0 useMinimalCoverageHeuristic=false useSeed=true useCOG=true useKegg=true paired=true ")
         f.write("suffix1='%s' suffix2='%s' "%(suffixes[0],suffixes[1]))
         f.write("useIdentityFilter=false textStoragePolicy=InRMAZ blastFormat=BlastTAB mapping='Taxonomy:BUILT_IN=true,Taxonomy:GI_MAP=true,SEED:GI_MAP=true,KEGG:GI_MAP=true,COG:GI_MAP=true,COG:REFSEQ_MAP=true';\n")

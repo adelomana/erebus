@@ -154,7 +154,7 @@ def sampleReader(inputFileName):
 
 # 0. preliminaries
 metaDataFile='/Volumes/omics4tb/alomana/projects/ornl/data/metadata/ORNL_Sept2015_sequence_metadata.txt'
-rootDataDir='/Volumes/omics4tb/alomana/projects/ornl/data/hitsFiles/'
+rootDataDir='/Volumes/omics4tb/alomana/projects/ornl/data/hitsFilesRefSeq/'
 abundanceThreshold=5e-2
 nMax=50
 
@@ -268,7 +268,7 @@ for well in allWells:
         matplotlib.pyplot.tick_params(axis='x',which='both',bottom='off',top='off')
         matplotlib.pyplot.tick_params(axis='y',which='both',right='off',left='off')
         figureName='well_%s_size_%s.png'%(well,size)
-        matplotlib.pyplot.savefig('figures/%s'%figureName)
+        matplotlib.pyplot.savefig('figuresRefSeq/%s'%figureName)
         matplotlib.pyplot.clf()
         
         print

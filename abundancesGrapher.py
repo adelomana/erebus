@@ -35,21 +35,23 @@ def matrixDiscreteMaker(t):
     more than 20% --> 4
     '''
 
-    # less than 1% or nan --> 1
+    # nan, convert to 0 to avoid numerical warnings
     numpy.place(t,numpy.isnan(t),0)
-    numpy.place(t,t<0.01,float('nan'))
 
-    # between 1% and 5% --> 2
+    # between 1% and 5% --> 1
     t[numpy.where(numpy.logical_and(t>=0.01, t<0.05))]=1
 
-    # between 5% and 10% --> 3
+    # between 5% and 10% --> 2
     t[numpy.where(numpy.logical_and(t>=0.05, t<0.1))]=2
 
-    # between 10% and 20% --> 4
+    # between 10% and 20% --> 3
     t[numpy.where(numpy.logical_and(t>=0.1, t<0.2))]=3
 
-    # more than 20% --> 5
+    # more than 20% --> 4
     t[numpy.where(numpy.logical_and(t>=0.2, t<1-1e-10))]=4
+
+    # less than 1% or nan --> nan, which maps as white. this line should be last in order to avoid numerical warnings
+    numpy.place(t,t<0.01,float('nan'))
 
     return t
 

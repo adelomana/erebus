@@ -13,7 +13,7 @@ def diamondDBbuilder():
     inputFile=scratchDir+'databaseBuilder.sh'
     with open(inputFile,'w') as g:
         g.write('#!/bin/bash\n\n')
-        g.write('#$ -N database\n')
+        g.write('#$ -N dbBuild\n')
         g.write('#$ -o %s/messages_database_DIAMOND.o.txt\n'%scratchDir)
         g.write('#$ -e %s/messages_database_DIAMOND.e.txt\n'%scratchDir)
         g.write('#$ -P Bal_alomana\n')
@@ -40,15 +40,14 @@ def runnerCreator(tag):
     this function creates the runner files of aegir SGE system
     '''
 
-    minimalTag='c%s'%(tag.split('_')[1])
-    fastDir='/tmp/%s/'%tag
+    minimalTag='nr%s'%(tag.split('_')[1])
     
-    inputFile='sgeRunnersRefSeq/%s.sh'%tag
+    inputFile='sgeRunners/nr.%s.sh'%tag
     with open(inputFile,'w') as g:
         g.write('#!/bin/bash\n\n')
         g.write('#$ -N %s\n'%minimalTag)
-        g.write('#$ -o %s/messagesDIAMOND_%s.o.txt\n'%(scratchDir,minimalTag))
-        g.write('#$ -e %s/messagesDIAMOND_%s.e.txt\n'%(scratchDir,minimalTag))
+        g.write('#$ -o %s/messagesDIAMOND.nr.%s.o.txt\n'%(scratchDir,minimalTag))
+        g.write('#$ -e %s/messagesDIAMOND.nr.%s.e.txt\n'%(scratchDir,minimalTag))
         g.write('#$ -P Bal_alomana\n')
         g.write('#$ -pe serial %s\n'%threads)
         g.write('#$ -q baliga\n')
@@ -69,11 +68,12 @@ def runnerCreator(tag):
 # 0. user defined variables
 threads=40
 diamondPath='/proj/omics4tb/alomana/software/diamond-linux64_binary_v0.7.11/diamond'
-dataBaseFastaFile='/proj/omics4tb/alomana/software/diamond-linux64_binary_v0.7.11/complete.nonredundant_protein.all.version.january.19.faa'
-dataBaseDiamondPath='/proj/omics4tb/alomana/software/diamond-linux64_binary_v0.7.11/refseq_jan_19_complete.nonredundant_protein'
-fastaFilesDir='/proj/omics4tb/alomana/projects/ornl/data/fastaFiles/'
-diamondOutputDir='/proj/omics4tb/alomana/projects/ornl/data/diamondFilesRefSeq/'
+dataBaseFastaFile='/proj/omics4tb/alomana/software/diamond-linux64_binary_v0.7.11/nr.20160413.fa'
+dataBaseDiamondPath='/proj/omics4tb/alomana/software/diamond-linux64_binary_v0.7.11/nr.20160413'
 scratchDir='/proj/omics4tb/alomana/scratch/diamond/'
+
+fastaFilesDir='/proj/omics4tb/alomana/projects/ornl/data/fastaFiles/'
+diamondOutputDir='/proj/omics4tb/alomana/projects/ornl/data/diamondFiles/nr.85107862/'
 
 # 1. building DIAMOND db
 #diamondDBbuilder()
@@ -85,12 +85,10 @@ inputFiles=os.listdir(fastaFilesDir)
 # 3. create launching the SGE calling files
 for inputFile in inputFiles:
     tag=inputFile.split('.')[0]
-    #!tag='concatenated_99'
     runnerCreator(tag)
 
     # 2.1. launching
-    cmd='qsub sgeRunnersRefSeq/%s.sh'%tag
+    cmd='qsub sgeRunners/nr.%s.sh'%tag
     os.system(cmd)
-    #sys.exit()
 
 print '... all done.'

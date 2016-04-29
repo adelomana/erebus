@@ -34,7 +34,7 @@ def selector(label):
 ### MAIN
 
 # 0. user defined variables
-inputFileDir='/Volumes/omics4tb/alomana/projects/ornl/data/diamondFilesRefSeq/'
+inputFileDir='/Volumes/omics4tb/alomana/projects/ornl/data/diamondFiles/nr.85107862/'
 numberOfFiles=64
 threshold=70.
 

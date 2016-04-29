@@ -130,7 +130,7 @@ def sampleReader(inputFileName):
             if cleanVector[0][:3] == '+++':
                 reading=False
                 
-            # filling up Noah's ark. Building a dictionary with unique names and number of reads and a list for the structure of the taxonomy.
+            # filling up Noah's ark. Building a dictionary with unique names and frequency of reads, and a list for the structure of the taxonomy.
             if reading == True:
                 # dealing with the taxonomy
                 taxonomyDepth=len(cleanVector)-1

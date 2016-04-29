@@ -15,7 +15,7 @@ for i in range(numberOfFiles):
     runnerFile='extractors/runner_%s.txt'%count
     with open(runnerFile,'w') as f:
         
-        f.write("open file='/Volumes/omics4tb/alomana/projects/ornl/data/rmaFiles/concatenated_%s.rma';\n"%count)
+        f.write("open file='/Volumes/omics4tb/alomana/projects/ornl/data/rmaFiles/nr/concatenated_%s.rma';\n"%count)
         f.write("collapse rank='Species';\n")
         f.write("select rank='Species';\n")
         f.write("set drawer=RectangularPhylogram;\n")
@@ -25,7 +25,7 @@ for i in range(numberOfFiles):
 
     # 2. executing
     print 'executing runner file %s...'%count
-    cmd='/Users/alomana/Applications/MEGAN/MEGAN.app/Contents/MacOS/JavaApplicationStub -g -E -c /Users/alomana/gDrive2/projects/ornl/src/%s > /Volumes/omics4tb/alomana/projects/ornl/data/hitsFiles/sample_%s.txt'%(runnerFile,count)
+    cmd='/Users/alomana/Applications/MEGAN/MEGAN.app/Contents/MacOS/JavaApplicationStub -g -E -c /Users/alomana/gDrive2/projects/ornl/src/%s > /Volumes/omics4tb/alomana/projects/ornl/data/hitsFiles/nr/sample_%s.txt'%(runnerFile,count)
 
     print
     print cmd
